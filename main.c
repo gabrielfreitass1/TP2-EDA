@@ -6,21 +6,21 @@
 typedef struct CanMam
 {
     int  Idade;
-    char Etnia;
-    char EstCivil;
-    char EstT;
-    char EstN;
-    char SextoEst;
-    char TipDifer;
-    char Nota;
-    char EstA;
+    char Etnia[6];
+    char EstCivil[9];
+    char EstT[3];
+    char EstN[3];
+    char SextoEst[5];
+    char TipDifer[27];
+    int  Nota;
+    char EstA[9];
     int  TamTumor;
-    char StaEst;
-    char StAPro;
+    char StaEst[9];
+    char StAPro[9];
     int  NodExaminado;
     int  NodPositivo;
     int  MesVida;
-    char Status;
+    char Status[6];
     struct CanMam *Esquerda;
     struct CanMam *Direita;
 }CanMam;
@@ -49,30 +49,32 @@ CanMam* InsArv(CanMam *ArvBin,int IdadeArq,char EtniaArq[6],char EstCivilArq[9],
   if (ArvBin == NULL){
     ArvBin=(CanMam*)malloc(sizeof(CanMam));
 	  ArvBin->Idade=IdadeArq;
-    ArvBin->Etnia=EtniaArq;
-    ArvBin->EstCivil=EstCivilArq;
-    ArvBin->EstT=EstTArq;
-    ArvBin->EstN=EstNArq;
-    ArvBin->SextoEst=SexEstArq;
-    ArvBin->TipDifer=TipDifArq;
-    ArvBin->Nota=NotaArq;
-    ArvBin->EstA=EstAArq;
+    strcpy(ArvBin->Etnia,EtniaArq);
+    strcpy(ArvBin->EstCivil,EstCivilArq);
+    strcpy(ArvBin->EstT,EstTArq);
+    strcpy(ArvBin->EstN,EstNArq);
+    strcpy(ArvBin->SextoEst,SexEstArq);
+    strcpy(ArvBin->TipDifer,TipDifArq);
+    strcpy(ArvBin->Nota,NotaArq);
+    strcpy(ArvBin->EstA,EstAArq);
     ArvBin->TamTumor=TamTumArq;
-    ArvBin->StaEst=StaEstArq;
-    ArvBin->StAPro=StaProArq;
+    strcpy(ArvBin->StaEst,StaEstArq);
+    strcpy(ArvBin->StAPro,StaProArq);
     ArvBin->NodExaminado=NodExaArq;
     ArvBin->NodPositivo=NodPosArq;
     ArvBin->MesVida=MesVidArq;
-    ArvBin->Status=StaArq;
+    strcpy(ArvBin->Status,StaArq);
     ArvBin->Esquerda=NULL;
 	  ArvBin->Direita=NULL;
 	}
 	else{
 		if (IdadeArq<ArvBin->Idade){
+      printf("Teste-3");
       ArvBin = InsArv(ArvBin->Esquerda,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
                       TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
 		}
 		if (IdadeArq>ArvBin->Idade){
+      printf("Teste-4");
       ArvBin = InsArv(ArvBin->Direita,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
                       TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
 		}
@@ -144,13 +146,19 @@ int main(){
         //Preenche e trabalha com as árvores binárias.
         if (nome_arquivo!=NULL)
         {
-          AloVet(fp,ArvBin,nome_arquivo);
-          //Inclusão direta para teste.
-          //ArvBin = InsArv(ArvBin,43,"White","Divorced","T1","N1","IIA","Poorly differentiated","3","Regional",16,"Positive","Positive",2,1,87,"Alive");
-          printf("Nos: %d",ContaArv(ArvBin));
-          t = clock() - t;
-          printf("\nTempo de Execucao Total: %lf",((double)t)/((CLOCKS_PER_SEC/1000)));
-          free(ArvBin);
+          ArvBin=(CanMam*)malloc(sizeof(CanMam));
+          if (ArvBin==NULL){
+            printf("Alocacao da raiz da arvore binária mal sucedida!");
+          }
+          else{
+            AloVet(fp,ArvBin,nome_arquivo);
+            //Inclusão direta para teste.
+            //ArvBin = InsArv(ArvBin,43,"White","Divorced","T1","N1","IIA","Poorly differentiated","3","Regional",16,"Positive","Positive",2,1,87,"Alive");
+            printf("Nos: %d",ContaArv(ArvBin));
+            t = clock() - t;
+            printf("\nTempo de Execucao Total: %lf",((double)t)/((CLOCKS_PER_SEC/1000)));
+            free(ArvBin);
+          }
         }
       break;
 
