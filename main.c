@@ -138,11 +138,14 @@ int main(){
     printf("3 - Sair\n");
     scanf("%d",&menu);
     system("cls");
-
+    fflush(stdin);
+	  
     switch (menu){
       case 1:
         printf("Digite o nome do arquivo a ser lido (Ex: Breast_Cancer.csv).\n");
         scanf("%s",nome_arquivo);
+	fflush(stdin);
+		    
         //Preenche e trabalha com as árvores binárias.
         if (nome_arquivo!=NULL)
         {
@@ -166,11 +169,12 @@ int main(){
       break;
 
       case 3:
+	printf("O programa esta sendo encerrado!");	    
         menu = 3;
       break;
 
       default:
-      printf ("Insira uma opçao valida!!\n");
+      printf ("Insira uma opcao valida!!\n\n");
     }
   }while(menu != 3);
   return 1;
