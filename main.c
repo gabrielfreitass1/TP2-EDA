@@ -33,12 +33,18 @@ int ValArq(FILE *fp){
   return 1;
 }
 
+int ContaArv(CanMam *ArvBin){
+   if(ArvBin == NULL)
+        return 0;
+   else
+        return 1 + ContaArv(ArvBin->Esquerda) + ContaArv(ArvBin->Direita);
+}
+
 CanMam* CriaArvVaz(){
   return NULL;
 }
-
-CanMam* InsArv(CanMam *ArvBin,int IdadeArq,char EtniaArq,char EstCivilArq,char EstTArq,char EstNArq,char SexEstArq,char TipDifArq,char NotaArq,char EstAArq,
-               int TamTumArq,char StaEstArq,char StaProArq,int NodExaArq,int NodPosArq,int MesVidArq,char StaArq)
+CanMam* InsArv(CanMam *ArvBin,int IdadeArq,char EtniaArq[6],char EstCivilArq[9],char EstTArq[3],char EstNArq[3],char SexEstArq[5],char TipDifArq[27],char NotaArq[12],char EstAArq[9],
+               int TamTumArq,char StaEstArq[9],char StaProArq[9],int NodExaArq,int NodPosArq,int MesVidArq,char StaArq[6])
 {
   if (ArvBin == NULL){
     ArvBin=(CanMam*)malloc(sizeof(CanMam));
@@ -62,14 +68,19 @@ CanMam* InsArv(CanMam *ArvBin,int IdadeArq,char EtniaArq,char EstCivilArq,char E
 	  ArvBin->Direita=NULL;
 	}
 	else{
-		if (IdadeArq<(ArvBin->Idade)){
-      InsArv(ArvBin->Esquerda,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
-             TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
+		if (IdadeArq<ArvBin->Idade){
+      ArvBin = InsArv(ArvBin->Esquerda,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
+                      TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
 		}
-		else{
-      InsArv(ArvBin->Direita,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
-             TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
+		if (IdadeArq>ArvBin->Idade){
+      ArvBin = InsArv(ArvBin->Direita,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
+                      TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
 		}
+    /*
+    if (IdadeArq==ArvBin->Idade){
+      
+    }
+    */
 	}
   return ArvBin;
 }
@@ -89,16 +100,17 @@ int AloVet(FILE *vArqEnt,CanMam *vetor,char NomArq[20]){
             break;
       }  
       //Pega as informações da database.
-      if (!fscanf(vArqEnt,"%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%d,%[^,],%[^,],%d,%d,%d,%[^\n]",&IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,&TamTumArq,StaEstArq,StaProArq,&NodExaArq,&NodPosArq,&MesVidArq,StaArq)){
+      if (!fscanf(vArqEnt,"%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%d,%[^,],%[^,],%d,%d,%d,%[^\n]",
+                  &IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,&TamTumArq,StaEstArq,StaProArq,&NodExaArq,&NodPosArq,&MesVidArq,StaArq)){
         printf("Erro ao Scanear o arquivo na linha %d.\n",s+1); 
         break;
       }
       //Printf para acompanhar
       //printf("%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s,%d,%d,%d,%s\n",IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,TamTumArq,StaEstArq,StaProArq,&NodExaArq,&NodPosArq,&MesVidArq,StaArq);
       
-      //Inserir árvores ordenando por idade.
-      InsArv(vetor,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
-             TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);  
+      //Inserir na árvore ordenando por idade e tamanho do tumor.
+      vetor = InsArv(vetor,IdadeArq,EtniaArq,EstCivilArq,EstTArq,EstNArq,SexEstArq,TipDifArq,NotaArq,EstAArq,
+                     TamTumArq,StaEstArq,StaProArq,NodExaArq,NodPosArq,MesVidArq,StaArq);
       s++;
     }
     fclose(vArqEnt);
@@ -118,7 +130,7 @@ int main(){
   char nome_arquivo[20];
 
   do{
-    printf("Escolha uma opçao do menu\n");
+    printf("Escolha uma opcao do menu\n");
     printf("1 - Carregar arquivo de Dados\n");
     printf("2 - Emitir Relatorio\n");
     printf("3 - Sair\n");
@@ -127,14 +139,17 @@ int main(){
 
     switch (menu){
       case 1:
-        printf("Digite o nome do arquivo a ser lido\nEX:Breast_Cancer.csv\n");
+        printf("Digite o nome do arquivo a ser lido (Ex: Breast_Cancer.csv).\n");
         scanf("%s",nome_arquivo);
         //Preenche e trabalha com as árvores binárias.
         if (nome_arquivo!=NULL)
         {
           AloVet(fp,ArvBin,nome_arquivo);
+          //Inclusão direta para teste.
+          //ArvBin = InsArv(ArvBin,43,"White","Divorced","T1","N1","IIA","Poorly differentiated","3","Regional",16,"Positive","Positive",2,1,87,"Alive");
+          printf("Nos: %d",ContaArv(ArvBin));
           t = clock() - t;
-          printf("\nTempo de Execução Total: %lf",((double)t)/((CLOCKS_PER_SEC/1000)));
+          printf("\nTempo de Execucao Total: %lf",((double)t)/((CLOCKS_PER_SEC/1000)));
           free(ArvBin);
         }
       break;
@@ -149,6 +164,6 @@ int main(){
       default:
       printf ("Insira uma opçao valida!!\n");
     }
-    }while(menu != 3);
+  }while(menu != 3);
   return 1;
 }
